@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Adaptive Learning{% endblock %}</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Menlo', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50:  '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                        },
+                    },
+                }
+            }
+        }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <script src="https://unpkg.com/htmx.org@2.0.3"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/static/custom.css">
+
+    <style>
+        html, body { font-family: 'Inter', system-ui, sans-serif; }
+
+        /* Sidebar collapse */
+        body.sidebar-collapsed #app-sidebar {
+            display: none;
+        }
+        body:not(.sidebar-collapsed) #sidebar-toggle-collapsed {
+            display: none !important;
+        }
+        body.sidebar-collapsed #sidebar-toggle-collapsed {
+            display: block !important;
+        }
+    </style>
+</head>
+<body class="h-full bg-white text-slate-900 antialiased">
+    <div class="h-full flex overflow-hidden">
+
+        <!-- ============================================================
+             Sidebar
+             ============================================================ -->
+        <aside id="app-sidebar"
+               class="w-64 shrink-0 border-r border-slate-200 bg-white flex flex-col h-full">
+
+            <!-- Brand + toggle -->
+            <div class="px-4 py-4 border-b border-slate-200 flex items-center justify-between gap-2">
+                <a href="/" class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-8 h-8 rounded-lg bg-brand-500 text-white flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-network-wired text-sm"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <div class="font-semibold text-[14px] leading-tight text-slate-900 truncate">
+                            Adaptive Learning
+                        </div>
+                        <div class="text-[10px] text-slate-500 leading-tight">
+                            AI-powered tutor
+                        </div>
+                    </div>
+                </a>
+                <button type="button"
+                        onclick="toggleSidebar()"
+                        class="shrink-0 p-1.5 rounded-md text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+                        title="Collapse sidebar">
+                    <i class="fa-solid fa-bars-staggered text-base"></i>
+                </button>
+            </div>
+
+            <!-- New session -->
+            <div class="px-3 pt-3">
+                <a href="/"
+                   class="flex items-center justify-center gap-2 w-full
+                          bg-brand-600 hover:bg-brand-700 text-white text-sm
+                          font-medium py-2 px-3 rounded-lg transition-colors">
+                    <i class="fa-solid fa-plus text-sm"></i>
+                    <span>New session</span>
+                </a>
+            </div>
+
+            <!-- Sessions list -->
+            <div class="flex-1 overflow-y-auto px-3 py-3"
+                 hx-get="/web/sessions/partial"
+                 hx-trigger="load, every 20s"
+                 hx-swap="innerHTML">
+                {% include "partials/sessions_sidebar.html" %}
+            </div>
+
+            <!-- Footer -->
+            <div class="px-4 py-3 border-t border-slate-200">
+                <div class="flex items-center gap-2 text-xs text-slate-500">
+                    <i class="fa-solid fa-user text-sm"></i>
+                    <span>Default user</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Collapsed toggle (fixed) -->
+        <button id="sidebar-toggle-collapsed"
+                type="button"
+                onclick="toggleSidebar()"
+                class="p-2 ml-2 rounded-md bg-white border border-slate-200
+                       hover:bg-slate-50 text-slate-700 transition-colors
+                       shrink-0 self-start mt-4"
+                title="Open sidebar"
+                style="display: none;">
+            <i class="fa-solid fa-bars-staggered text-base"></i>
+        </button>
+
+        <!-- ============================================================
+             Main
+             ============================================================ -->
+        <main class="flex-1 min-w-0 h-full overflow-hidden bg-slate-50">
+            {% block main %}{% endblock %}
+        </main>
+
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const collapsed = document.body.classList.toggle('sidebar-collapsed');
+            localStorage.setItem('sidebar-collapsed', collapsed ? '1' : '0');
+        }
+
+        (function() {
+            if (localStorage.getItem('sidebar-collapsed') === '1') {
+                document.body.classList.add('sidebar-collapsed');
+            }
+        })();
+
+        document.body.addEventListener('htmx:configRequest', function(evt) {
+            evt.detail.headers['X-Requested-With'] = 'XMLHttpRequest';
+        });
+
+        document.body.addEventListener('htmx:afterRequest', function(evt) {
+            if (evt.detail.elt?.dataset?.action === 'delete-session') {
+                if (evt.detail.successful) {
+                    evt.detail.elt.closest('[data-session-row]')?.remove();
+                }
+            }
+        });
+    </script>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

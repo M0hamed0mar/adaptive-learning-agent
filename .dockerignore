@@ -1,0 +1,83 @@
+﻿# ============================================================
+# Docker ignore
+# ============================================================
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# --- Virtual environments ---
+.venv/
+venv/
+env/
+ENV/
+
+# --- Test / coverage ---
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# --- SQLite / data ---
+data/
+*.db
+*.db-wal
+*.db-shm
+*.db-journal
+*.db.backup
+
+# --- Environment ---
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# --- IDE / editors ---
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+
+# --- Git ---
+.git/
+.gitignore
+.gitattributes
+
+# --- Documentation ---
+README.md
+LICENSE
+CHANGELOG.md
+CONTRIBUTING.md
+docs/
+
+# --- Tests (not needed in the image) ---
+tests/
+
+# --- Scripts: exclude everything except the entrypoint ---
+scripts/*
+!scripts/docker-entrypoint.sh
+
+# --- Infrastructure (not needed in the image) ---
+infrastructure/
+
+# --- Migrations are needed at runtime (keep them) ---
+# migrations/
+
+# --- Alembic local ---
+alembic.ini.bak

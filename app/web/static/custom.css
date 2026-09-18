@@ -1,0 +1,152 @@
+﻿/* ============================================================
+   Adaptive Learning — custom styles
+   ============================================================ */
+
+/* HTMX */
+.htmx-swapping { opacity: 0; transition: opacity 150ms; }
+.htmx-settling { opacity: 1; transition: opacity 150ms; }
+
+/* Prose (lesson content) */
+.prose-content {
+    color: #1e293b;
+    line-height: 1.75;
+    font-size: 15px;
+}
+.prose-content h1 { font-size: 1.875rem; font-weight: 700; margin-top: 2rem; margin-bottom: 1rem; color: #0f172a; letter-spacing: -0.01em; }
+.prose-content h2 { font-size: 1.375rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: #0f172a; }
+.prose-content h3 { font-size: 1.125rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; color: #0f172a; }
+.prose-content p { margin-bottom: 1rem; }
+.prose-content strong { color: #0f172a; font-weight: 600; }
+.prose-content ul, .prose-content ol { margin-bottom: 1rem; padding-inline-start: 1.5rem; }
+.prose-content ul { list-style: disc; }
+.prose-content ol { list-style: decimal; }
+.prose-content li { margin-bottom: 0.375rem; }
+
+.prose-content code {
+    background: #f1f5f9;
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    font-size: 0.875em;
+    font-family: 'JetBrains Mono', Menlo, monospace;
+    color: #0369a1;
+    border: 1px solid #e2e8f0;
+}
+.prose-content pre {
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 1.125rem 1.25rem;
+    border-radius: 0.75rem;
+    overflow-x: auto;
+    margin-bottom: 1.25rem;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+}
+.prose-content pre code { background: transparent; padding: 0; color: inherit; border: none; font-size: inherit; }
+
+.prose-content blockquote {
+    border-inline-start: 3px solid #0ea5e9;
+    padding: 0.75rem 1rem;
+    color: #475569;
+    margin-bottom: 1rem;
+    background: #f8fafc;
+    border-radius: 0.5rem;
+}
+.prose-content a { color: #0284c7; text-decoration: underline; text-underline-offset: 2px; }
+.prose-content a:hover { color: #0369a1; }
+.prose-content hr { border: none; border-top: 1px solid #e2e8f0; margin: 1.5rem 0; }
+.prose-content table { width: 100%; border-collapse: collapse; margin-bottom: 1.25rem; font-size: 0.875rem; }
+.prose-content th, .prose-content td { border: 1px solid #e2e8f0; padding: 0.5rem 0.75rem; text-align: start; }
+.prose-content th { background: #f8fafc; font-weight: 600; color: #0f172a; }
+
+/* Pygments */
+.codehilite { background: #0f172a; border-radius: 0.75rem; padding: 1.125rem 1.25rem; overflow-x: auto; margin-bottom: 1.25rem; font-size: 0.8125rem; line-height: 1.6; }
+.codehilite pre { background: transparent; padding: 0; margin: 0; border: none; }
+.codehilite .k { color: #7dd3fc; font-weight: 500; }
+.codehilite .s { color: #86efac; }
+.codehilite .c { color: #64748b; font-style: italic; }
+.codehilite .n { color: #e2e8f0; }
+.codehilite .nf { color: #7dd3fc; }
+.codehilite .nc { color: #fbbf24; }
+.codehilite .nb { color: #7dd3fc; }
+.codehilite .o { color: #cbd5e1; }
+.codehilite .m { color: #fda4af; }
+
+html { scroll-behavior: smooth; }
+
+
+/* ============================================================
+   Force SVG icons to be visible
+   ============================================================ */
+
+svg {
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+svg > * {
+    vector-effect: non-scaling-stroke;
+}
+
+
+/* ============================================================
+   Font Awesome icon overrides
+   ============================================================ */
+
+i.fa-solid, i.fa-regular, i.fa-brands {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+/* Default icon size — override with utility classes */
+i.fa-solid:not([class*="text-"]) {
+    /* keep current color */
+}
+
+
+/* ============================================================
+   Chat panel
+   ============================================================ */
+
+/* Compact prose for chat messages */
+.prose-chat {
+    font-size: 14px;
+    line-height: 1.6;
+    color: inherit;
+}
+.prose-chat p { margin: 0.25rem 0; }
+.prose-chat p:first-child { margin-top: 0; }
+.prose-chat p:last-child { margin-bottom: 0; }
+.prose-chat ul, .prose-chat ol {
+    margin: 0.25rem 0;
+    padding-left: 1.25rem;
+}
+.prose-chat code {
+    background: rgba(15, 23, 42, 0.06);
+    padding: 0.05rem 0.3rem;
+    border-radius: 0.25rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85em;
+    color: #0369a1;
+}
+.prose-chat pre {
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin: 0.5rem 0;
+    font-size: 0.8em;
+}
+.prose-chat pre code {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+}
+
+/* HTMX hide helper */
+.htmx-hide { transition: opacity 150ms; }
+.htmx-request .htmx-hide { opacity: 0; }

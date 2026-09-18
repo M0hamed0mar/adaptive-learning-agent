@@ -1,0 +1,135 @@
+﻿{% extends "base.html" %}
+
+{% block title %}{{ session.title or session.topic }}{% endblock %}
+
+{% block main %}
+<div class="h-full flex">
+
+    <!-- ============================================================
+         Modules sidebar (Coursera-style)
+         ============================================================ -->
+    <aside class="w-80 shrink-0 border-r border-slate-200 bg-white flex flex-col h-full">
+        <!-- Back to dashboard -->
+        <div class="px-5 py-4 border-b border-slate-200">
+            <a href="/sessions/{{ session.id }}/dashboard"
+               class="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 transition-colors">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span>Dashboard</span>
+            </a>
+            <h2 class="mt-3 text-sm font-semibold text-slate-900 truncate">
+                {{ roadmap.title if roadmap else session.topic }}
+            </h2>
+        </div>
+
+        <!-- Module tree -->
+        <div id="module-tree-container"
+             class="flex-1 overflow-y-auto px-3 py-3"
+             hx-get="/web/sessions/{{ session.id }}/module-tree"
+             hx-trigger="refreshTree from:body"
+             hx-swap="innerHTML">
+            {% include "partials/module_tree.html" %}
+        </div>
+    </aside>
+
+    <!-- ============================================================
+         Main content
+         ============================================================ -->
+    <div class="flex-1 min-w-0 h-full overflow-y-auto">
+        <div class="max-w-3xl mx-auto px-8 py-12">
+
+            <!-- Welcome / Overview -->
+            <div class="mb-10">
+                <h1 class="text-3xl font-bold text-slate-900 tracking-tight mb-3">
+                    {{ roadmap.title if roadmap else session.topic }}
+                </h1>
+                {% if roadmap %}
+                    <p class="text-slate-600 leading-relaxed">
+                        {{ roadmap.summary }}
+                    </p>
+                {% endif %}
+            </div>
+
+            {% if roadmap %}
+                <!-- Start learning card -->
+                {% if progress and progress.total_parts > 0 and progress.completed_parts | length == 0 %}
+                    <a href="/sessions/{{ session.id }}/lessons/{{ roadmap.modules[0].parts[0].part_id }}"
+                       class="group block bg-white border border-slate-200 rounded-2xl p-6 mb-6
+                              hover:border-brand-400 hover:shadow-sm transition-all">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-brand-500 text-white
+                                        flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-play"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-xs text-slate-500 mb-0.5">Start here</div>
+                                <div class="font-semibold text-slate-900">
+                                    {{ roadmap.modules[0].parts[0].title }}
+                                </div>
+                            </div>
+                            <div class="text-slate-300 group-hover:text-brand-500 transition-colors">
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </div>
+                        </div>
+                    </a>
+                {% endif %}
+
+                <!-- Modules overview -->
+                <div class="space-y-4">
+                    {% for module in roadmap.modules %}
+                        <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+                            <div class="px-5 py-4 border-b border-slate-100 flex items-center gap-3">
+                                <span class="text-[11px] font-semibold text-slate-400 tracking-wider">
+                                    MODULE {{ loop.index }}
+                                </span>
+                                <h3 class="text-sm font-semibold text-slate-900">
+                                    {{ module.title }}
+                                </h3>
+                            </div>
+                            <ul class="divide-y divide-slate-100">
+                                {% for part in module.parts %}
+                                    {% set is_done = part.part_id in completed_parts %}
+                                    <li>
+                                        <a href="/sessions/{{ session.id }}/lessons/{{ part.part_id }}"
+                                           class="flex items-center gap-3 px-5 py-3
+                                                  hover:bg-slate-50 transition-colors">
+                                            <div class="shrink-0">
+                                                {% if is_done %}
+                                                    <span class="w-5 h-5 rounded-full bg-emerald-100
+                                                                 text-emerald-600 flex items-center justify-center">
+                                                        <i class="fa-solid fa-check"></i>
+                                                    </span>
+                                                {% else %}
+                                                    <span class="w-5 h-5 rounded-full border-2 border-slate-300
+                                                                 flex items-center justify-center text-[10px] text-slate-500 font-medium">
+                                                        {{ loop.index }}
+                                                    </span>
+                                                {% endif %}
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <div class="text-sm font-medium text-slate-900 truncate">
+                                                    {{ part.title }}
+                                                </div>
+                                            </div>
+                                            <div class="shrink-0 text-slate-300">
+                                                <i class="fa-solid fa-chevron-right"></i>
+                                            </div>
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="bg-white border border-slate-200 rounded-2xl p-8 text-center">
+                    <p class="text-slate-600">
+                        Roadmap is still being generated.
+                    </p>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

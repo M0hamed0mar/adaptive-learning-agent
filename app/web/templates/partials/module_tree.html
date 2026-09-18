@@ -1,0 +1,74 @@
+{# Module tree for the session sidebar. #}
+
+{% if progress and progress.total_parts > 0 %}
+    <div class="px-2 pb-3 mb-3 border-b border-slate-100">
+        <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-medium text-slate-500 uppercase tracking-wide">
+                Progress
+            </span>
+            <span class="text-[11px] font-semibold text-brand-600">
+                {{ "%.0f" | format(progress.percentage) }}%
+            </span>
+        </div>
+        <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+            <div class="bg-brand-500 h-1.5 rounded-full transition-all duration-500"
+                 style="width: {{ progress.percentage }}%"></div>
+        </div>
+        <div class="text-[10px] text-slate-400 mt-1.5">
+            {{ progress.completed_parts | length }} of {{ progress.total_parts }} lessons
+        </div>
+    </div>
+{% endif %}
+
+{% if roadmap %}
+    <div class="space-y-1">
+        {% for module in roadmap.modules %}
+            <details class="group" {% if loop.first %}open{% endif %}>
+                <summary class="flex items-center gap-2 px-2 py-1.5 rounded-md
+                                cursor-pointer text-slate-700 hover:bg-slate-50
+                                list-none transition-colors">
+                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-400
+                              group-open:rotate-90 group-open:text-brand-500
+                              transition-transform inline-block w-3"></i>
+                    <span class="flex-1 text-[12.5px] font-medium truncate">
+                        {{ module.title }}
+                    </span>
+                </summary>
+
+                <ul class="mt-0.5 ml-3 space-y-0.5">
+                    {% for part in module.parts %}
+                        {% set is_done = part.part_id in completed_parts %}
+                        {% set is_current = part.part_id == current_part_id %}
+                        <li>
+                            <a href="/sessions/{{ session.id }}/lessons/{{ part.part_id }}"
+                               class="flex items-start gap-2 px-2 py-1.5 rounded-md text-[12.5px]
+                                      {% if is_current %}
+                                          bg-brand-50 text-brand-900 font-medium
+                                      {% else %}
+                                          text-slate-600 hover:bg-slate-50 hover:text-slate-900
+                                      {% endif %}
+                                      transition-colors">
+                                <span class="shrink-0 mt-0.5 flex items-center justify-center">
+                                    {% if is_done %}
+                                        <span class="inline-flex w-3.5 h-3.5 rounded-full bg-emerald-500
+                                                     text-white items-center justify-center">
+                                            <i class="fa-solid fa-check text-[8px]"></i>
+                                        </span>
+                                    {% else %}
+                                        <span class="inline-block w-3.5 h-3.5 rounded-full border-2
+                                                     {% if is_current %}border-brand-500{% else %}border-slate-300{% endif %}"></span>
+                                    {% endif %}
+                                </span>
+                                <span class="min-w-0 truncate">{{ part.title }}</span>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </details>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="text-center py-8 px-3">
+        <p class="text-xs text-slate-500">Roadmap not ready yet</p>
+    </div>
+{% endif %}

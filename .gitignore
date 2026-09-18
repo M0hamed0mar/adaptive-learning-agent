@@ -1,0 +1,151 @@
+# ============================================================
+# Adaptive Learning Agent — .gitignore
+# ============================================================
+
+# ------------------------------------------------------------
+# Python
+# ------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+.python-version
+
+# ------------------------------------------------------------
+# Testing & Coverage
+# ------------------------------------------------------------
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+*.cover
+*.py,cover
+.cache
+nosetests.xml
+coverage.xml
+*.lcov
+
+# ------------------------------------------------------------
+# IDE & Editors
+# ------------------------------------------------------------
+.idea/
+.vscode/
+*.swp
+*.swo
+*.swn
+*~
+.project
+.pydevproject
+.spyderproject
+.spyproject
+.ropeproject
+*.sublime-*
+
+# ------------------------------------------------------------
+# OS
+# ------------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ------------------------------------------------------------
+# Environment Variables
+# ------------------------------------------------------------
+.env
+.env.local
+.env.*.local
+.env.production
+.env.staging
+
+# ------------------------------------------------------------
+# Secrets
+# ------------------------------------------------------------
+secrets/*
+!secrets/.gitkeep
+!secrets/README.md
+*.pem
+*.key
+*.crt
+
+# ------------------------------------------------------------
+# Database & Data
+# ------------------------------------------------------------
+data/*.db
+data/*.db-wal
+data/*.db-shm
+data/*.db-journal
+data/*.db.backup
+!data/.gitkeep
+
+# ------------------------------------------------------------
+# Logs
+# ------------------------------------------------------------
+*.log
+logs/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ------------------------------------------------------------
+# Build artifacts
+# ------------------------------------------------------------
+*.zip
+*.tar.gz
+*.rar
+*.whl
+
+# ------------------------------------------------------------
+# Local scripts (temp)
+# ------------------------------------------------------------
+fix_*.py
+temp_*.py
+scratch_*.py
+
+# ------------------------------------------------------------
+# Docker
+# ------------------------------------------------------------
+docker-compose.override.yml
+.docker/
+
+# ------------------------------------------------------------
+# AWS
+# ------------------------------------------------------------
+.aws/
+aws-cli.log
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl

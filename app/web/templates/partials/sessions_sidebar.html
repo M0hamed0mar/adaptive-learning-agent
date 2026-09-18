@@ -1,0 +1,59 @@
+{% if sessions %}
+    <div class="space-y-0.5">
+        {% for s in sessions %}
+            <div data-session-row
+                 class="group relative flex items-start gap-2 px-2.5 py-2 rounded-lg
+                        {% if active_session_id == s.id %}
+                            bg-brand-50
+                        {% else %}
+                            hover:bg-slate-50
+                        {% endif %}
+                        transition-colors">
+
+                <a href="/sessions/{{ s.id }}/dashboard"
+                   class="flex items-start gap-2.5 flex-1 min-w-0">
+                    <div class="shrink-0 mt-0.5">
+                        {% if s.status == 'planning' %}
+                            <span class="inline-block w-4 h-4 border-2 border-brand-500
+                                         border-t-transparent rounded-full animate-spin"></span>
+                        {% elif s.status == 'failed' %}
+                            <i class="fa-solid fa-circle-xmark text-red-500 text-sm"></i>
+                        {% else %}
+                            <i class="fa-regular fa-file-lines text-slate-400 text-sm"></i>
+                        {% endif %}
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <div class="text-[13px] font-medium truncate
+                                    {% if active_session_id == s.id %}text-brand-900{% else %}text-slate-700{% endif %}">
+                            {{ s.title or s.topic }}
+                        </div>
+                        <div class="text-[10.5px] text-slate-500 truncate mt-0.5">
+                            {{ s.created_at | time_ago }}
+                        </div>
+                    </div>
+                </a>
+
+                <button
+                    type="button"
+                    data-action="delete-session"
+                    hx-delete="/web/sessions/{{ s.id }}"
+                    hx-confirm="Delete this session? This cannot be undone."
+                    hx-target="closest [data-session-row]"
+                    hx-swap="outerHTML"
+                    class="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity
+                           p-1 rounded text-slate-400 hover:text-red-600 hover:bg-red-50"
+                    title="Delete session"
+                >
+                    <i class="fa-solid fa-trash-can text-xs"></i>
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="text-center py-12 px-3">
+        <div class="w-10 h-10 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-3">
+            <i class="fa-solid fa-layer-group"></i>
+        </div>
+        <p class="text-xs text-slate-500">No sessions yet</p>
+    </div>
+{% endif %}

@@ -1,0 +1,49 @@
+﻿{# Rendered when the lesson has content. #}
+
+<article class="bg-white border border-slate-200 rounded-2xl p-8 sm:p-10">
+    <div class="prose-content">
+        {{ lesson.content | markdown }}
+    </div>
+</article>
+
+{# Footer actions #}
+<div class="mt-6 flex items-center justify-between gap-3 flex-wrap">
+    <div>
+        <button type="button"
+                onclick="openChatPanel()"
+                class="inline-flex items-center gap-2
+                       bg-brand-50 hover:bg-brand-100 text-brand-700 text-sm font-medium
+                       py-2 px-4 rounded-lg border border-brand-200 transition-colors">
+            <i class="fa-solid fa-comments"></i>
+            <span>Ask any question</span>
+        </button>
+    </div>
+
+    <div>
+        {% if is_completed %}
+            <span class="inline-flex items-center gap-2
+                         bg-emerald-50 text-emerald-700 text-sm font-medium
+                         py-2 px-4 rounded-lg border border-emerald-200">
+                <i class="fa-solid fa-check"></i>
+                <span>Completed</span>
+            </span>
+        {% else %}
+            <button
+                hx-post="/web/sessions/{{ session.id }}/progress/complete"
+                hx-vals='{"part_id": "{{ lesson.metadata.part_id }}"}'
+                hx-target="this"
+                hx-swap="outerHTML"
+                hx-indicator="#mark-spinner"
+                hx-on::after-request="if (event.detail.successful) { document.body.dispatchEvent(new Event('refreshTree')); }"
+                class="inline-flex items-center gap-2
+                       bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium
+                       py-2 px-5 rounded-lg transition-colors disabled:opacity-60">
+                <span id="mark-spinner"
+                      class="htmx-indicator inline-block w-3.5 h-3.5 border-2 border-white
+                             border-t-transparent rounded-full animate-spin"></span>
+                <i class="fa-solid fa-check"></i>
+                <span>Mark as completed</span>
+            </button>
+        {% endif %}
+    </div>
+</div>

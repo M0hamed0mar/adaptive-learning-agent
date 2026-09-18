@@ -1,0 +1,121 @@
+﻿{% extends "base.html" %}
+
+{% block title %}{{ part.title }}{% endblock %}
+
+{% block main %}
+<div class="h-full flex">
+
+    <!-- Sidebar (modules) -->
+    <aside class="w-80 shrink-0 border-r border-slate-200 bg-white flex flex-col h-full">
+        <div class="px-5 py-4 border-b border-slate-200">
+            <a href="/sessions/{{ session.id }}/session"
+               class="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 transition-colors">
+                <i class="fa-solid fa-arrow-left text-xs"></i>
+                <span>Course</span>
+            </a>
+            <h2 class="mt-3 text-sm font-semibold text-slate-900 truncate">
+                {{ roadmap.title if roadmap else session.topic }}
+            </h2>
+        </div>
+
+        <div id="module-tree-container"
+             class="flex-1 overflow-y-auto px-3 py-3"
+             hx-get="/web/sessions/{{ session.id }}/module-tree?current={{ part.part_id }}"
+             hx-trigger="refreshTree from:body"
+             hx-swap="innerHTML">
+            {% set current_part_id = part.part_id %}
+            {% include "partials/module_tree.html" %}
+        </div>
+    </aside>
+
+    <!-- Main content -->
+    <div class="flex-1 min-w-0 h-full flex">
+
+        <!-- Lesson content area -->
+        <div id="lesson-main" class="flex-1 min-w-0 h-full overflow-y-auto">
+            <div class="max-w-3xl mx-auto px-8 py-12">
+
+                <!-- Breadcrumb -->
+                <div class="mb-8">
+                    <div class="flex items-center gap-2 text-xs text-slate-500">
+                        <span class="font-mono">{{ part.part_id }}</span>
+                        <span>·</span>
+                        <span>{{ module.title }}</span>
+                    </div>
+                    <h1 class="text-3xl font-bold text-slate-900 tracking-tight mt-2">
+                        {{ part.title }}
+                    </h1>
+                </div>
+
+                <!-- Lesson content -->
+                <div id="lesson-content-container" class="mb-8">
+                    {% if lesson %}
+                        {% include "partials/lesson_content.html" %}
+                    {% else %}
+                        {% include "partials/lesson_generate_button.html" %}
+                    {% endif %}
+                </div>
+
+                <!-- Prev/Next -->
+                <div class="flex items-center justify-between gap-4 pt-6 border-t border-slate-200">
+                    {% if prev_part_id %}
+                        <a href="/sessions/{{ session.id }}/lessons/{{ prev_part_id }}"
+                           class="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
+                            <i class="fa-solid fa-arrow-left text-xs"></i>
+                            <span>Previous</span>
+                        </a>
+                    {% else %}
+                        <span></span>
+                    {% endif %}
+
+                    {% if next_part_id %}
+                        <a href="/sessions/{{ session.id }}/lessons/{{ next_part_id }}"
+                           class="inline-flex items-center gap-2 text-sm font-medium text-brand-600 hover:text-brand-700 transition-colors">
+                            <span>Next</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </a>
+                    {% else %}
+                        <a href="/sessions/{{ session.id }}/session"
+                           class="inline-flex items-center gap-2 text-sm font-medium text-brand-600 hover:text-brand-700 transition-colors">
+                            <span>Back to course</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </a>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Chat panel (hidden by default) -->
+        <aside id="chat-panel"
+               class="hidden w-96 shrink-0 h-full
+                      border-l border-slate-200 bg-white">
+            <div id="chat-panel-content" class="h-full">
+                {# Loaded on open via HTMX #}
+            </div>
+        </aside>
+
+    </div>
+
+</div>
+
+<script>
+    function openChatPanel() {
+        const panel = document.getElementById('chat-panel');
+        panel.classList.remove('hidden');
+
+        // Load the chat panel content via HTMX if not loaded
+        const container = document.getElementById('chat-panel-content');
+        if (container.innerHTML.trim() === '') {
+            htmx.ajax('GET',
+                '/web/sessions/{{ session.id }}/lessons/{{ part.part_id }}/chat',
+                { target: '#chat-panel-content' }
+            );
+        }
+    }
+
+    function closeChatPanel() {
+        document.getElementById('chat-panel').classList.add('hidden');
+    }
+</script>
+{% endblock %}

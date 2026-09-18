@@ -1,0 +1,206 @@
+﻿{% extends "base.html" %}
+
+{% block title %}{{ session.title or session.topic }}{% endblock %}
+
+{% block main %}
+<div class="h-full overflow-y-auto">
+    <div class="max-w-4xl mx-auto px-8 py-12">
+
+        <!-- Header -->
+        <div class="mb-10">
+            <div class="flex items-start justify-between gap-4 mb-3">
+                <div class="min-w-0">
+                    <h1 class="text-2xl font-bold text-slate-900 tracking-tight">
+                        {{ session.title or session.topic }}
+                    </h1>
+                    <p class="text-sm text-slate-500 mt-1">
+                        Created {{ session.created_at | format_datetime }}
+                    </p>
+                </div>
+                <div id="session-status"
+                     hx-get="/web/sessions/{{ session.id }}/status"
+                     hx-trigger="every 3s"
+                     hx-swap="outerHTML">
+                    {% include "partials/session_status.html" %}
+                </div>
+            </div>
+        </div>
+
+        {# ============================================================
+           Case 1: Still planning
+           ============================================================ #}
+        {% if session.status == 'planning' %}
+            <div class="bg-white border border-slate-200 rounded-2xl p-10 text-center">
+                <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl
+                            bg-brand-50 text-brand-600 mb-5">
+                    <span class="inline-block w-6 h-6 border-2 border-brand-500
+                                 border-t-transparent rounded-full animate-spin"></span>
+                </div>
+                <h2 class="text-lg font-semibold text-slate-900 mb-2">
+                    Generating your roadmap
+                </h2>
+                <p class="text-sm text-slate-600 leading-relaxed max-w-md mx-auto">
+                    Our AI is designing your personalized curriculum and
+                    writing focused lessons for each part.
+                </p>
+                <p class="text-xs text-slate-400 mt-4">
+                    Takes about 2-4 minutes. This page updates automatically.
+                </p>
+            </div>
+
+            <script>
+                (function() {
+                    let tries = 0;
+                    const MAX_TRIES = 60;
+                    const timer = setInterval(async () => {
+                        tries++;
+                        if (tries > MAX_TRIES) { clearInterval(timer); return; }
+                        try {
+                            const res = await fetch('/web/sessions/{{ session.id }}/status');
+                            const html = await res.text();
+                            if (html.includes('Ready') || html.includes('Failed')) {
+                                clearInterval(timer);
+                                window.location.reload();
+                            }
+                        } catch (e) { /* ignore */ }
+                    }, 5000);
+                })();
+            </script>
+
+        {# ============================================================
+           Case 2: Failed
+           ============================================================ #}
+        {% elif session.status == 'failed' %}
+            <div class="bg-white border border-red-200 rounded-2xl p-8">
+                <div class="flex items-start gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-red-50 text-red-600
+                                flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-xmark"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h2 class="font-semibold text-red-900 mb-1">
+                            Generation failed
+                        </h2>
+                        <p class="text-sm text-red-700 leading-relaxed mb-4">
+                            The pipeline hit an error. You can retry.
+                        </p>
+                        <a href="/sessions/{{ session.id }}/profile"
+                           class="inline-flex items-center gap-2
+                                  bg-red-600 hover:bg-red-700 text-white text-sm
+                                  font-medium py-2 px-4 rounded-lg transition-colors">
+                            <span>Retry</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        {# ============================================================
+           Case 3: Ready → show overview
+           ============================================================ #}
+        {% elif session.status in ('ready', 'learning', 'completed') %}
+
+            {% if progress %}
+                <div class="bg-white border border-slate-200 rounded-2xl p-6 mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <div class="text-sm font-semibold text-slate-900">
+                                Your progress
+                            </div>
+                            <div class="text-xs text-slate-500 mt-0.5">
+                                {{ progress.completed_parts | length }} of
+                                {{ progress.total_parts }} lessons completed
+                            </div>
+                        </div>
+                        <div class="text-2xl font-bold text-brand-600">
+                            {{ "%.0f" | format(progress.percentage) }}%
+                        </div>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                        <div class="bg-brand-500 h-2 rounded-full
+                                    transition-all duration-500"
+                             style="width: {{ progress.percentage }}%"></div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="grid sm:grid-cols-2 gap-4 mb-6">
+                <a href="/sessions/{{ session.id }}/session"
+                   class="group block bg-white border border-slate-200 rounded-2xl p-6
+                          hover:border-brand-400 hover:shadow-sm transition-all">
+                    <div class="w-10 h-10 rounded-lg bg-brand-50 text-brand-600
+                                flex items-center justify-center mb-4
+                                group-hover:bg-brand-500 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+                    <h3 class="font-semibold text-slate-900 mb-1">
+                        Start learning
+                    </h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">
+                        Open your course view and begin the first lesson.
+                    </p>
+                </a>
+
+                <a href="/sessions/{{ session.id }}/session"
+                   class="group block bg-white border border-slate-200 rounded-2xl p-6
+                          hover:border-brand-400 hover:shadow-sm transition-all">
+                    <div class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600
+                                flex items-center justify-center mb-4
+                                group-hover:bg-slate-900 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-layer-group"></i>
+                    </div>
+                    <h3 class="font-semibold text-slate-900 mb-1">
+                        View roadmap
+                    </h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">
+                        See all modules and lessons in your curriculum.
+                    </p>
+                </a>
+            </div>
+
+            {% if profile %}
+                <div class="bg-white border border-slate-200 rounded-2xl p-6">
+                    <h2 class="text-sm font-semibold text-slate-900 mb-4">
+                        Your profile
+                    </h2>
+                    <dl class="grid sm:grid-cols-2 gap-x-8 gap-y-4 text-sm">
+                        <div>
+                            <dt class="text-xs text-slate-500 uppercase tracking-wide mb-1">Topic</dt>
+                            <dd class="font-medium text-slate-900">{{ profile.topic }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-xs text-slate-500 uppercase tracking-wide mb-1">Role</dt>
+                            <dd class="font-medium text-slate-900">{{ profile.role }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-xs text-slate-500 uppercase tracking-wide mb-1">Level</dt>
+                            <dd class="font-medium text-slate-900">{{ profile.level.value }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-xs text-slate-500 uppercase tracking-wide mb-1">Goal</dt>
+                            <dd class="font-medium text-slate-900">{{ profile.goal.value }}</dd>
+                        </div>
+                    </dl>
+                </div>
+            {% endif %}
+
+        {% else %}
+            <div class="bg-white border border-slate-200 rounded-2xl p-8 text-center">
+                <h2 class="font-semibold text-slate-900 mb-2">
+                    This session is in draft
+                </h2>
+                <p class="text-sm text-slate-600 mb-6">
+                    Answer a few quick questions to generate your roadmap.
+                </p>
+                <a href="/sessions/{{ session.id }}/profile"
+                   class="inline-flex items-center gap-2
+                          bg-brand-600 hover:bg-brand-700 text-white text-sm
+                          font-medium py-2.5 px-5 rounded-lg transition-colors">
+                    <span>Continue setup</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

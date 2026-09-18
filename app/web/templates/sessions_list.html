@@ -1,0 +1,93 @@
+﻿{% extends "base.html" %}
+
+{% block title %}My sessions{% endblock %}
+
+{% block main %}
+<div class="h-full overflow-y-auto">
+    <div class="max-w-4xl mx-auto px-8 py-12">
+
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-900 tracking-tight">
+                    My sessions
+                </h1>
+                <p class="text-sm text-slate-500 mt-1">
+                    All your learning journeys in one place
+                </p>
+            </div>
+            <a href="/"
+               class="inline-flex items-center gap-2
+                      bg-brand-600 hover:bg-brand-700 text-white text-sm
+                      font-medium py-2.5 px-4 rounded-lg transition-colors">
+                <i class="fa-solid fa-plus"></i>
+                <span>New session</span>
+            </a>
+        </div>
+
+        {% if sessions_all %}
+            <div class="space-y-3">
+                {% for s in sessions_all %}
+                    <a href="/sessions/{{ s.id }}/dashboard"
+                       class="group block bg-white border border-slate-200 rounded-2xl p-5
+                              hover:border-brand-400 hover:shadow-sm transition-all">
+                        <div class="flex items-center gap-4">
+                            <div class="shrink-0 w-10 h-10 rounded-lg
+                                        {% if s.status == 'planning' %}
+                                            bg-amber-50 text-amber-600
+                                        {% elif s.status in ('ready', 'learning', 'completed') %}
+                                            bg-brand-50 text-brand-600
+                                        {% elif s.status == 'failed' %}
+                                            bg-red-50 text-red-600
+                                        {% else %}
+                                            bg-slate-100 text-slate-500
+                                        {% endif %}
+                                        flex items-center justify-center">
+                                {% if s.status == 'planning' %}
+                                    <span class="inline-block w-4 h-4 border-2 border-amber-500
+                                                 border-t-transparent rounded-full animate-spin"></span>
+                                {% else %}
+                                    <i class="fa-solid fa-book-open"></i>
+                                {% endif %}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="font-semibold text-slate-900 truncate">
+                                    {{ s.title or s.topic }}
+                                </div>
+                                <div class="text-xs text-slate-500 mt-1 flex items-center gap-2">
+                                    <span>{{ s.created_at | format_datetime }}</span>
+                                    <span class="text-slate-300">·</span>
+                                    <span>{{ s.status | status_label }}</span>
+                                </div>
+                            </div>
+                            <div class="shrink-0 text-slate-300 group-hover:text-brand-500 transition-colors">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="bg-white border border-slate-200 rounded-2xl p-12 text-center">
+                <div class="w-12 h-12 mx-auto rounded-2xl bg-slate-100 text-slate-400
+                            flex items-center justify-center mb-5">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+                <h2 class="text-base font-semibold text-slate-900 mb-2">
+                    No sessions yet
+                </h2>
+                <p class="text-sm text-slate-500 mb-6">
+                    Create your first learning session to get started.
+                </p>
+                <a href="/"
+                   class="inline-flex items-center gap-2
+                          bg-brand-600 hover:bg-brand-700 text-white text-sm
+                          font-medium py-2.5 px-5 rounded-lg transition-colors">
+                    <span>Start learning</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

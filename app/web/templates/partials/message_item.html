@@ -1,0 +1,19 @@
+﻿{# Single chat message. #}
+
+{% if m.role == "user" %}
+    <div class="flex justify-end">
+        <div class="max-w-[85%] bg-brand-600 text-white text-sm
+                    rounded-2xl rounded-tr-sm px-4 py-2.5">
+            {{ m.content }}
+        </div>
+    </div>
+{% else %}
+    <div class="flex justify-start">
+        <div class="max-w-[85%] bg-slate-100 text-slate-900 text-sm
+                    rounded-2xl rounded-tl-sm px-4 py-2.5">
+            <div class="prose-chat">
+                {{ m.content | markdown }}
+            </div>
+        </div>
+    </div>
+{% endif %}

@@ -1,0 +1,83 @@
+﻿{% extends "base.html" %}
+
+{% block title %}New session · Adaptive Learning{% endblock %}
+
+{% block main %}
+<div class="h-full overflow-y-auto">
+    <div class="max-w-2xl mx-auto px-8 py-20">
+
+        <div class="mb-10">
+            <h1 class="text-3xl font-bold text-slate-900 tracking-tight mb-3">
+                What do you want to learn?
+            </h1>
+            <p class="text-slate-600 leading-relaxed">
+                Describe your goal. Our AI will design a personalized
+                roadmap and write focused lessons for each part.
+            </p>
+        </div>
+
+        <form method="post" action="/sessions" class="space-y-5">
+            <div>
+                <textarea
+                    name="raw_input"
+                    required
+                    minlength="10"
+                    maxlength="2000"
+                    rows="7"
+                    placeholder="Example: I'm a beginner AI Engineer. I want to learn Docker for my ML projects. I prefer practical, hands-on examples."
+                    class="w-full px-4 py-3.5 text-[15px] leading-relaxed
+                           bg-white border border-slate-300 rounded-xl
+                           focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent
+                           placeholder:text-slate-400 resize-none"
+                    autofocus
+                ></textarea>
+                <div class="mt-2 flex items-center justify-between text-xs text-slate-500">
+                    <span>Be specific — the more context, the better.</span>
+                    <span>Up to 2000 characters</span>
+                </div>
+            </div>
+
+            <button
+                type="submit"
+                class="w-full flex items-center justify-center gap-2
+                       bg-brand-600 hover:bg-brand-700 text-white
+                       font-medium py-3 px-6 rounded-xl transition-colors
+                       focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
+            >
+                <span>Create my roadmap</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </form>
+
+        <div class="mt-14 pt-8 border-t border-slate-200">
+            <div class="grid grid-cols-4 gap-4 text-center">
+                <div>
+                    <div class="w-12 h-12 mx-auto rounded-xl bg-brand-600 text-white flex items-center justify-center mb-3">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </div>
+                    <div class="text-sm font-medium text-slate-700">Describe</div>
+                </div>
+                <div>
+                    <div class="w-12 h-12 mx-auto rounded-xl bg-brand-600 text-white flex items-center justify-center mb-3">
+                        <i class="fa-solid fa-file-lines"></i>
+                    </div>
+                    <div class="text-sm font-medium text-slate-700">Answer</div>
+                </div>
+                <div>
+                    <div class="w-12 h-12 mx-auto rounded-xl bg-brand-600 text-white flex items-center justify-center mb-3">
+                        <i class="fa-solid fa-layer-group"></i>
+                    </div>
+                    <div class="text-sm font-medium text-slate-700">Get roadmap</div>
+                </div>
+                <div>
+                    <div class="w-12 h-12 mx-auto rounded-xl bg-brand-600 text-white flex items-center justify-center mb-3">
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+                    <div class="text-sm font-medium text-slate-700">Learn</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

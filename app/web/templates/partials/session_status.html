@@ -1,0 +1,47 @@
+﻿{# Status badge + progress bar (polled). #}
+
+<div class="flex flex-col gap-3">
+
+    {# --- Status badge --- #}
+    <div class="inline-flex items-center gap-2 self-start
+                px-3 py-1.5 rounded-full text-xs font-medium
+                {% if session.status == 'planning' %}
+                    bg-amber-50 text-amber-700 border border-amber-200
+                {% elif session.status in ('ready', 'learning', 'completed') %}
+                    bg-emerald-50 text-emerald-700 border border-emerald-200
+                {% elif session.status == 'failed' %}
+                    bg-red-50 text-red-700 border border-red-200
+                {% else %}
+                    bg-slate-100 text-slate-600 border border-slate-200
+                {% endif %}">
+        {% if session.status == 'planning' %}
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+        {% elif session.status in ('ready', 'learning', 'completed') %}
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+        {% elif session.status == 'failed' %}
+            <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+        {% else %}
+            <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+        {% endif %}
+        <span>{{ session.status | status_label }}</span>
+    </div>
+
+    {# --- Progress bar (planning only) --- #}
+    {% if session.status == 'planning' %}
+        <div class="w-full max-w-xs">
+            <div class="flex items-center justify-between mb-1.5">
+                <span class="text-xs text-slate-600">
+                    {{ session.pipeline_message or "Working..." }}
+                </span>
+                <span class="text-xs font-medium text-brand-600">
+                    {{ session.pipeline_progress or 0 }}%
+                </span>
+            </div>
+            <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                <div class="bg-brand-500 h-1.5 rounded-full transition-all duration-700"
+                     style="width: {{ session.pipeline_progress or 2 }}%"></div>
+            </div>
+        </div>
+    {% endif %}
+
+</div>

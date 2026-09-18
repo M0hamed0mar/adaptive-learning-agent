@@ -1,0 +1,199 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Tell us about you{% endblock %}
+
+{% block main %}
+<div class="h-full overflow-y-auto">
+    <div class="max-w-3xl mx-auto px-8 py-12">
+
+        <div class="mb-10">
+            <a href="/sessions/{{ session.id }}/dashboard"
+               class="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 transition-colors">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span>Back</span>
+            </a>
+            <h1 class="text-2xl font-bold text-slate-900 tracking-tight mt-6">
+                Tell us about you
+            </h1>
+            <p class="text-sm text-slate-500 mt-1">
+                4 quick questions to personalize your roadmap
+            </p>
+        </div>
+
+        <div class="mb-8 p-4 bg-white rounded-xl border border-slate-200">
+            <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wide mb-1.5">
+                You wrote
+            </div>
+            <p class="text-sm text-slate-700 leading-relaxed">
+                {{ session.title or session.topic }}
+            </p>
+        </div>
+
+        <form method="post" action="/sessions/{{ session.id }}/profile" class="space-y-8">
+
+            {# ============ Level ============ #}
+            <div>
+                <div class="mb-4">
+                    <label class="block text-base font-semibold text-slate-900">
+                        What is your current level?
+                    </label>
+                    <p class="text-sm text-slate-500 mt-1">
+                        Be honest — this shapes the entire roadmap.
+                    </p>
+                </div>
+                <div class="grid gap-2.5">
+                    {% set level_labels = {
+                        "beginner": "Complete beginner",
+                        "beginner_with_knowledge": "Beginner with some knowledge",
+                        "intermediate": "Intermediate",
+                        "advanced": "Advanced"
+                    } %}
+                    {% set level_descs = {
+                        "beginner": "I'm completely new to this topic.",
+                        "beginner_with_knowledge": "I know some basics but not confident.",
+                        "intermediate": "I have solid working knowledge.",
+                        "advanced": "I want to master edge cases."
+                    } %}
+                    {% for level in levels %}
+                        <label class="flex items-start gap-3 p-4 rounded-xl cursor-pointer
+                                      border-2 border-slate-200
+                                      hover:border-brand-300 hover:bg-brand-50/30
+                                      has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50
+                                      transition-colors">
+                            <input type="radio" name="level" value="{{ level.value }}" required
+                                   class="mt-1 w-4 h-4 text-brand-600 focus:ring-brand-500 border-slate-300">
+                            <div class="flex-1 min-w-0">
+                                <div class="font-medium text-slate-900 text-sm">
+                                    {{ level_labels.get(level.value, level.value) }}
+                                </div>
+                                <div class="text-xs text-slate-500 mt-0.5">
+                                    {{ level_descs.get(level.value, "") }}
+                                </div>
+                            </div>
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {# ============ Goal ============ #}
+            <div>
+                <div class="mb-4">
+                    <label class="block text-base font-semibold text-slate-900">
+                        What is your main goal?
+                    </label>
+                    <p class="text-sm text-slate-500 mt-1">
+                        Why are you learning this?
+                    </p>
+                </div>
+                <div class="grid gap-2.5">
+                    {% set goal_labels = {
+                        "understand_fundamentals": "Understand the fundamentals",
+                        "build_projects": "Build real projects",
+                        "professional_usage": "Use professionally",
+                        "interview_prep": "Prepare for interviews"
+                    } %}
+                    {% set goal_descs = {
+                        "understand_fundamentals": "I want a solid conceptual foundation.",
+                        "build_projects": "I want to ship something real.",
+                        "professional_usage": "I need it for my job.",
+                        "interview_prep": "I'm preparing for technical interviews."
+                    } %}
+                    {% for goal in goals %}
+                        <label class="flex items-start gap-3 p-4 rounded-xl cursor-pointer
+                                      border-2 border-slate-200
+                                      hover:border-brand-300 hover:bg-brand-50/30
+                                      has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50
+                                      transition-colors">
+                            <input type="radio" name="goal" value="{{ goal.value }}" required
+                                   class="mt-1 w-4 h-4 text-brand-600 focus:ring-brand-500 border-slate-300">
+                            <div class="flex-1 min-w-0">
+                                <div class="font-medium text-slate-900 text-sm">
+                                    {{ goal_labels.get(goal.value, goal.value) }}
+                                </div>
+                                <div class="text-xs text-slate-500 mt-0.5">
+                                    {{ goal_descs.get(goal.value, "") }}
+                                </div>
+                            </div>
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {# ============ Role ============ #}
+            <div>
+                <div class="mb-4">
+                    <label for="role" class="block text-base font-semibold text-slate-900">
+                        What is your professional role?
+                    </label>
+                    <p class="text-sm text-slate-500 mt-1">
+                        We'll tailor examples to your context.
+                    </p>
+                </div>
+                <input type="text" id="role" name="role" required maxlength="200"
+                       placeholder="e.g. AI Engineer, Data Scientist, Backend Developer"
+                       class="w-full px-4 py-3 text-sm bg-white border border-slate-300 rounded-xl
+                              focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent
+                              placeholder:text-slate-400">
+            </div>
+
+            {# ============ Learning style ============ #}
+            <div>
+                <div class="mb-4">
+                    <label class="block text-base font-semibold text-slate-900">
+                        How do you prefer to learn?
+                    </label>
+                    <p class="text-sm text-slate-500 mt-1">
+                        Affects the balance of theory and practice.
+                    </p>
+                </div>
+                <div class="grid gap-2.5">
+                    {% set style_labels = {
+                        "theoretical": "Theoretical",
+                        "balanced": "Balanced",
+                        "practical": "Practical (hands-on)"
+                    } %}
+                    {% set style_descs = {
+                        "theoretical": "I like deep explanations and analogies.",
+                        "balanced": "A healthy mix of theory and practice.",
+                        "practical": "Show me code and real examples."
+                    } %}
+                    {% for style in styles %}
+                        <label class="flex items-start gap-3 p-4 rounded-xl cursor-pointer
+                                      border-2 border-slate-200
+                                      hover:border-brand-300 hover:bg-brand-50/30
+                                      has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50
+                                      transition-colors">
+                            <input type="radio" name="learning_style" value="{{ style.value }}" required
+                                   class="mt-1 w-4 h-4 text-brand-600 focus:ring-brand-500 border-slate-300">
+                            <div class="flex-1 min-w-0">
+                                <div class="font-medium text-slate-900 text-sm">
+                                    {{ style_labels.get(style.value, style.value) }}
+                                </div>
+                                <div class="text-xs text-slate-500 mt-0.5">
+                                    {{ style_descs.get(style.value, "") }}
+                                </div>
+                            </div>
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="pt-4 border-t border-slate-200">
+                <button type="submit"
+                        class="w-full flex items-center justify-center gap-2
+                               bg-brand-600 hover:bg-brand-700 text-white
+                               font-medium py-3.5 px-6 rounded-xl transition-colors
+                               focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2">
+                    <span>Generate my roadmap</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+                <p class="text-xs text-slate-500 text-center mt-3">
+                    Takes about 2-4 minutes
+                </p>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+{% endblock %}

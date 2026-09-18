@@ -1,0 +1,41 @@
+﻿
+{# Shown when the lesson has not been generated yet (lazy). #}
+
+<div class="bg-white border border-slate-200 rounded-2xl p-10 text-center">
+
+    <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl
+                bg-brand-50 text-brand-600 mb-5">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+    </div>
+
+    <h2 class="text-lg font-semibold text-slate-900 mb-2">
+        Generate this lesson
+    </h2>
+    <p class="text-sm text-slate-600 leading-relaxed max-w-md mx-auto mb-6">
+        Our tutor will write a personalized lesson for this part,
+        tailored to your profile.
+    </p>
+
+    <button
+        hx-post="/sessions/{{ session.id }}/lessons/{{ part.part_id }}/generate"
+        hx-target="#lesson-content-container"
+        hx-swap="innerHTML"
+        hx-indicator="#generate-spinner"
+        class="inline-flex items-center gap-2
+               bg-brand-600 hover:bg-brand-700 text-white
+               font-medium py-3 px-6 rounded-xl transition-colors
+               disabled:opacity-60 disabled:cursor-not-allowed">
+
+        <span id="generate-spinner"
+              class="htmx-indicator inline-block w-4 h-4 border-2 border-white
+                     border-t-transparent rounded-full animate-spin"></span>
+
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <span>Generate lesson</span>
+    </button>
+
+    <p class="text-xs text-slate-400 mt-4">
+        Takes about 10-20 seconds.
+    </p>
+
+</div>
